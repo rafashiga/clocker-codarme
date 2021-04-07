@@ -11,6 +11,7 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
+  InputLeftAddon,
 } from '@chakra-ui/react';
 import { Logo } from '@/components';
 import firebase from '@/config/firebase';
@@ -18,9 +19,10 @@ import firebase from '@/config/firebase';
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
   password: yup.string().required('Campo obrigatório'),
+  username: yup.string().required('Campo obrigatório'),
 });
 
-export default function Login() {
+export default function Signup() {
   const {
     values,
     errors,
@@ -32,13 +34,14 @@ export default function Login() {
   } = useFormik({
     initialValues: {
       email: '',
+      username: '',
       password: '',
     },
     onSubmit: async (values, form) => {
       try {
         const user = await firebase
           .auth()
-          .signInWithEmailAndPassword(values.email, values.password);
+          .createUserWithEmailAndPassword(values.email, values.password);
         console.log(user);
       } catch (error) {
         console.error(error);
@@ -84,6 +87,23 @@ export default function Login() {
           )}
         </FormControl>
 
+        <FormControl id="username" p={4} isRequired>
+          <InputGroup size="lg">
+            <InputLeftAddon children="clocker.work/" />
+            <Input
+              type="username"
+              value={values.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </InputGroup>
+          {touched.username && (
+            <FormHelperText textColor="#e74c3c">
+              {errors.username}
+            </FormHelperText>
+          )}
+        </FormControl>
+
         <Box p={4}>
           <Button
             width="100%"
@@ -91,11 +111,12 @@ export default function Login() {
             isLoading={isSubmitting}
             colorScheme="blue"
           >
-            Entrar
+            cadastrar
           </Button>
         </Box>
       </Box>
-      <Link href="/signup">Ainda não tem uma conta? Cadastre-se</Link>
+
+      <Link href="/">Já tem uma conta? Acesse!</Link>
     </Container>
   );
 }
