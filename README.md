@@ -1,34 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<img align="center" src="public/img/logo.svg" alt="Clocker"/>
+<br>
+<br>
+<h3 align="center">
+  Project based on <a href="https://www.youtube.com/c/CodarMe/videos">CodarMe Videos</a>
+</h3>
+<br>
+<p align="center">
 
-## Getting Started
+  <img alt="top language" src="https://img.shields.io/github/languages/top/rafashiga/clocker-codarme?style=flat-square">
+  <img alt="language count" src="https://img.shields.io/github/languages/count/rafashiga/clocker-codarme?style=flat-square">
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/rafashiga/clocker-codarme?style=flat-square">
+  <img alt="Last commit" src="https://img.shields.io/github/last-commit/rafashiga/clocker-codarme?style=flat-square">
+  <br>
+  <br>
+  <a href="#space_invader-technologies">Technologies</a>
+  <br>
+  <br>
+  <img src="./public/img/website.png">
+  <br>
+  <h3 align="center">
+    <a href="" target="_blank">
+      <b>VISIT</b>
+    </a>
+  </h3>
+</p>
 
-First, run the development server:
+## :space_invader: Technologies
 
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [NextJS](https://nextjs.org/)
+- Typescript
+- [Chakra UI](https://chakra-ui.com/)
+- [Firebase](https://firebase.google.com/?hl=pt-br)
+- [Formik](https://formik.org/)
+- [Yup](https://github.com/jquense/yup)
