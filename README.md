@@ -1,8 +1,6 @@
 <p align="center">
   <img src="public/img/logo.svg" alt="Clocker"/>
 </p>
-<br>
-<br>
 <h3 align="center">
   Project based on <a href="https://www.youtube.com/c/CodarMe/videos">CodarMe Videos</a>
 </h3>
