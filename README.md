@@ -1,4 +1,6 @@
-<img align="center" src="public/img/logo.svg" alt="Clocker"/>
+<p align="center">
+  <img src="public/img/logo.svg" alt="Clocker"/>
+</p>
 <br>
 <br>
 <h3 align="center">
