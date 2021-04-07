@@ -1,103 +1,31 @@
-import Link from 'next/link';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import {
-  Container,
-  Box,
-  Input,
-  InputGroup,
-  Button,
-  Text,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-} from '@chakra-ui/react';
-import { Logo } from '@/components';
-import firebase, { persistenceMode } from '@/config/firebase';
+import { useState, useEffect } from 'react';
+import { Container, Spinner } from '@chakra-ui/react';
+import LoginTemplate from '@/templates/Login';
+import firebase from '@/config/firebase';
+import AgendaTemplate from '@/templates/Agenda';
 
-const validationSchema = yup.object().shape({
-  email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório'),
-});
-
-export default function Login() {
-  const {
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    isSubmitting,
-  } = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    onSubmit: async (values, form) => {
-      firebase.auth().setPersistence(persistenceMode);
-
-      try {
-        const user = await firebase
-          .auth()
-          .signInWithEmailAndPassword(values.email, values.password);
-        console.log(user);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    validationSchema,
+export default function Home() {
+  const [auth, setAuth] = useState({
+    loading: true,
+    user: false,
   });
 
-  return (
-    <Container p={4} centerContent>
-      <Logo />
-      <Box p={4} mt={8}>
-        <Text>Crie sua agenda compartilhada</Text>
-      </Box>
-      <Box>
-        <FormControl id="email" p={4} isRequired>
-          <FormLabel>Email</FormLabel>
-          <Input
-            size="lg"
-            type="email"
-            value={values.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {touched.email && (
-            <FormHelperText textColor="#e74c3c">{errors.email}</FormHelperText>
-          )}
-        </FormControl>
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      setAuth({
+        loading: false,
+        user: !!user,
+      });
+    });
+  }, []);
 
-        <FormControl id="password" p={4} isRequired>
-          <FormLabel>Password</FormLabel>
-          <Input
-            size="lg"
-            type="password"
-            value={values.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {touched.password && (
-            <FormHelperText textColor="#e74c3c">
-              {errors.password}
-            </FormHelperText>
-          )}
-        </FormControl>
+  if (auth.loading) {
+    return (
+      <Container p={4} centerContent>
+        <Spinner />
+      </Container>
+    );
+  }
 
-        <Box p={4}>
-          <Button
-            width="100%"
-            onClick={() => handleSubmit()}
-            isLoading={isSubmitting}
-            colorScheme="blue"
-          >
-            Entrar
-          </Button>
-        </Box>
-      </Box>
-      <Link href="/signup">Ainda não tem uma conta? Cadastre-se</Link>
-    </Container>
-  );
+  return auth.user ? <AgendaTemplate /> : <LoginTemplate />;
 }
