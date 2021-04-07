@@ -10,4 +10,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-export default firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+
+export const persistenceMode = firebase.auth.Auth.Persistence.LOCAL
+
+export default  app;
+
