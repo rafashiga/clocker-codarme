@@ -1,3 +1,5 @@
+import AgendaTemplate from '@/templates/Agenda';
+
 export default function Agenda() {
-	return <h1>OK</h1>;
+  return <AgendaTemplate />;
 }

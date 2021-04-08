@@ -1,4 +1,6 @@
+import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {
@@ -13,8 +15,9 @@ import {
   FormHelperText,
   InputLeftAddon,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 import { Logo } from '@/components';
-import { firebaseClient } from '@/config/firebase';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
@@ -23,6 +26,9 @@ const validationSchema = yup.object().shape({
 });
 
 export default function Signup() {
+  const { auth, signup } = useContext(AuthContext);
+  const router = useRouter();
+
   const {
     values,
     errors,
@@ -37,18 +43,13 @@ export default function Signup() {
       username: '',
       password: '',
     },
-    onSubmit: async (values, form) => {
-      try {
-        const user = await firebaseClient
-          .auth()
-          .createUserWithEmailAndPassword(values.email, values.password);
-        console.log(user);
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    onSubmit: signup,
     validationSchema,
   });
+
+  useEffect(() => {
+    auth.user && router.push('/agenda');
+  }, [auth.user]);
 
   return (
     <Container p={4} centerContent>

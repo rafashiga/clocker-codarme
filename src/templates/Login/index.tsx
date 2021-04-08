@@ -5,15 +5,15 @@ import {
   Container,
   Box,
   Input,
-  InputGroup,
   Button,
   Text,
   FormControl,
   FormLabel,
   FormHelperText,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 import { Logo } from '@/components';
-import { firebaseClient, persistenceMode } from '@/config/firebase';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
@@ -21,6 +21,8 @@ const validationSchema = yup.object().shape({
 });
 
 const LoginTemplate = () => {
+  const { login } = useContext(AuthContext);
+
   const {
     values,
     errors,
@@ -34,18 +36,7 @@ const LoginTemplate = () => {
       email: '',
       password: '',
     },
-    onSubmit: async (values, form) => {
-      firebaseClient.auth().setPersistence(persistenceMode);
-
-      try {
-        const user = await firebaseClient
-          .auth()
-          .signInWithEmailAndPassword(values.email, values.password);
-        console.log(user);
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    onSubmit: login,
     validationSchema,
   });
 
