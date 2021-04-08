@@ -13,5 +13,5 @@ export default async (req, res) => {
     username,
   });
 
-  res.status(200).json({name: 'OK'});
+  res.status(204).json();
 }
