@@ -1,5 +1,6 @@
 import { useState, createContext, ReactNode, useEffect } from 'react';
-import { firebaseClient, persistenceMode } from '@/config/firebase';
+import axios from 'axios';
+import { firebaseClient, persistenceMode } from '@/config/firebase/client';
 
 interface Auth {
   loading: boolean;
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+      return firebaseClient.auth().currentUser;
     } catch (error) {
       console.error('LOGIN ERROR: ', error);
     }
@@ -52,20 +54,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await firebaseClient
         .auth()
         .createUserWithEmailAndPassword(email, password);
-      login({ email, password });
-      // setupProfile(token, username);
 
-      // const res = await axios.post(
-      //   '/api/profile',
-      //   {
-      //     username: values.username,
-      //   },
-      //   {
-      //     headers: {
-      //       Authentication: `Bearer ${user.getToken()}`,
-      //     },
-      //   }
-      // );
+      const user = await login({ email, password });
+      const token = await user.getIdToken();
+
+      const res = await axios.post(
+        '/api/profile',
+        {
+          username,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error('SIGNUP ERROR: ', error);
     }
