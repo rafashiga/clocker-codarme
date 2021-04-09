@@ -1,4 +1,4 @@
-import { firebaseServer } from '@/config/firebase/server'
+import { firebaseServer } from '@/config/firebase/server';
 
 const db = firebaseServer.firestore();
 const profile = db.collection('profiles');
@@ -14,4 +14,4 @@ export default async (req, res) => {
   });
 
   res.status(204).json();
-}
+};

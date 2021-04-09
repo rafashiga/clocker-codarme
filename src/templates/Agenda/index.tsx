@@ -5,19 +5,21 @@ import { useRouter } from 'next/router';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import dateFormatted from '@/utils/DateFormatted';
-import Header from './Header';
 import { Logo } from '@/components';
-
+import Header from './Header';
+import { getToken } from '@/config/firebase/client';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Container, Button, IconButton, Text } from '@chakra-ui/react';
 
-const getAgenda = (when: Date) => {
-  axios.get('/api/agenda', {
+const getAgenda = async (when: Date) => {
+  const token = await getToken();
+
+  return await axios.get('/api/agenda', {
     params: {
       when,
     },
     headers: {
-      Authorization: `Bearer`,
+      Authorization: `Bearer ${token}`,
     },
   });
 };
