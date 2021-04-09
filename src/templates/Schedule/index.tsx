@@ -39,6 +39,14 @@ const ScheduleTemplate = () => {
     lazy: true,
   });
 
+  const setSchedule = async (data) => {
+    return axios.post('/api/schedule', {
+      ...data,
+      username: window.location.pathname.replace('/', ''),
+      when: time,
+    });
+  };
+
   const {
     values,
     errors,
@@ -52,7 +60,7 @@ const ScheduleTemplate = () => {
       name: '',
       phone: '',
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => setSchedule(values),
     validationSchema: yup.object().shape({
       name: yup.string().required('Campo obrigatório'),
       phone: yup.string().required('Campo obrigatório'),
