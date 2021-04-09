@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { useFetch } from '@refetty/react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import dateFormatted from '@/utils/DateFormatted';
-import { Logo, Header, TimeBlock } from '@/components';
+import { Logo, Header, TimeBlock, Modal, Input } from '@/components';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -17,22 +19,44 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
-const getSchedule = async (when: Date) => {
-  return await axios.get('/api/schedule', {
-    params: {
-      when,
-      username: window.location.pathname,
-    },
-  });
-};
-
 const ScheduleTemplate = () => {
-  const { auth, logout } = useContext(AuthContext);
   const router = useRouter();
+  const { auth, logout } = useContext(AuthContext);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [time, setTime] = useState('');
   const [when, setWhen] = useState(() => new Date());
+
+  const getSchedule = async (when: Date) => {
+    return await axios.get('/api/schedule', {
+      params: {
+        when,
+        username: window.location.pathname,
+      },
+    });
+  };
 
   const [data, { loading, status, error }, fetch] = useFetch(getSchedule, {
     lazy: true,
+  });
+
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    isSubmitting,
+  } = useFormik({
+    initialValues: {
+      name: '',
+      phone: '',
+    },
+    onSubmit: (values) => {},
+    validationSchema: yup.object().shape({
+      name: yup.string().required('Campo obrigatório'),
+      phone: yup.string().required('Campo obrigatório'),
+    }),
   });
 
   const dateOptions = {
@@ -54,8 +78,13 @@ const ScheduleTemplate = () => {
     setWhen(previousDate);
   };
 
+  const toggleModal = (time?: string) => {
+    setTime(time);
+    setIsOpenModal((prevState) => !prevState);
+  };
+
   useEffect(() => {
-    !auth.user && router.push('/schedule');
+    !auth.user ? router.push('/') : router.push('/schedule');
   }, [auth.user]);
 
   useEffect(() => {
@@ -103,8 +132,44 @@ const ScheduleTemplate = () => {
           />
         )}
         {data?.map((time) => (
-          <TimeBlock key={time} time={time} />
+          <TimeBlock key={time} time={time} click={() => toggleModal(time)} />
         ))}
+
+        <Modal
+          title={`Faça sua reserva. Horário: ${time}`}
+          isOpen={isOpenModal}
+          onClose={toggleModal}
+          click={handleSubmit}
+        >
+          <Box p={4}>
+            <Input
+              label="Nome"
+              touched={touched.name}
+              size="lg"
+              name="name"
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="Digite seu nome"
+              error={errors.name}
+              isRequired={true}
+            />
+          </Box>
+          <Box p={4}>
+            <Input
+              label="Telefone"
+              touched={touched.phone}
+              size="lg"
+              name="phone"
+              value={values.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="(99) 99999-9999"
+              error={errors.phone}
+              isRequired={true}
+            />
+          </Box>
+        </Modal>
       </SimpleGrid>
     </Container>
   );

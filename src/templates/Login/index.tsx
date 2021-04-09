@@ -1,24 +1,10 @@
 import Link from 'next/link';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import {
-  Container,
-  Box,
-  Input,
-  Button,
-  Text,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-} from '@chakra-ui/react';
+import { Container, Box, Button, Text } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
-import { Logo } from '@/components';
-
-const validationSchema = yup.object().shape({
-  email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório'),
-});
+import { Logo, Input } from '@/components';
 
 const LoginTemplate = () => {
   const { login } = useContext(AuthContext);
@@ -37,7 +23,13 @@ const LoginTemplate = () => {
       password: '',
     },
     onSubmit: login,
-    validationSchema,
+    validationSchema: yup.object().shape({
+      email: yup
+        .string()
+        .email('E-mail inválido')
+        .required('Campo obrigatório'),
+      password: yup.string().required('Campo obrigatório'),
+    }),
   });
 
   return (
@@ -47,35 +39,37 @@ const LoginTemplate = () => {
         <Text>Crie sua agenda compartilhada</Text>
       </Box>
       <Box>
-        <FormControl id="email" p={4} isRequired>
-          <FormLabel>Email</FormLabel>
+        <Box p={4}>
           <Input
-            size="lg"
+            label="E-mail"
             type="email"
+            touched={touched.email}
+            size="lg"
+            name="email"
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
+            placeholder="Digite seu nome"
+            error={errors.email}
+            isRequired={true}
           />
-          {touched.email && (
-            <FormHelperText textColor="#e74c3c">{errors.email}</FormHelperText>
-          )}
-        </FormControl>
+        </Box>
 
-        <FormControl id="password" p={4} isRequired>
-          <FormLabel>Password</FormLabel>
+        <Box p={4}>
           <Input
-            size="lg"
+            label="Senha"
             type="password"
+            touched={touched.password}
+            size="lg"
+            name="password"
             value={values.password}
             onChange={handleChange}
             onBlur={handleBlur}
+            placeholder="Digite sua senha"
+            error={errors.password}
+            isRequired={true}
           />
-          {touched.password && (
-            <FormHelperText textColor="#e74c3c">
-              {errors.password}
-            </FormHelperText>
-          )}
-        </FormControl>
+        </Box>
 
         <Box p={4}>
           <Button

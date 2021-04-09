@@ -1,4 +1,5 @@
 import { useState, createContext, ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { firebaseClient, persistenceMode } from '@/config/firebase/client';
 
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     loading: true,
     user: false,
   });
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = firebaseClient.auth().onAuthStateChanged((user) => {
@@ -74,7 +76,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const logout = () => firebaseClient.auth().signOut();
+  const logout = () => {
+    firebaseClient.auth().signOut();
+    router.push('/');
+  };
 
   return (
     <AuthContext.Provider value={{ auth, setAuth, login, signup, logout }}>

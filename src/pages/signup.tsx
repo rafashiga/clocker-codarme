@@ -6,24 +6,17 @@ import * as yup from 'yup';
 import {
   Container,
   Box,
-  Input,
+  Input as InputBase,
   InputGroup,
   Button,
   Text,
   FormControl,
-  FormLabel,
   FormHelperText,
   InputLeftAddon,
 } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
-import { Logo } from '@/components';
-
-const validationSchema = yup.object().shape({
-  email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório'),
-  username: yup.string().required('Campo obrigatório'),
-});
+import { Logo, Input } from '@/components';
 
 export default function Signup() {
   const { auth, signup } = useContext(AuthContext);
@@ -44,7 +37,14 @@ export default function Signup() {
       password: '',
     },
     onSubmit: signup,
-    validationSchema,
+    validationSchema: yup.object().shape({
+      email: yup
+        .string()
+        .email('E-mail inválido')
+        .required('Campo obrigatório'),
+      password: yup.string().required('Campo obrigatório'),
+      username: yup.string().required('Campo obrigatório'),
+    }),
   });
 
   useEffect(() => {
@@ -58,40 +58,42 @@ export default function Signup() {
         <Text>Crie sua agenda compartilhada</Text>
       </Box>
       <Box>
-        <FormControl id="email" p={4} isRequired>
-          <FormLabel>Email</FormLabel>
+        <Box p={4}>
           <Input
-            size="lg"
+            label="E-mail"
             type="email"
+            touched={touched.email}
+            size="lg"
+            name="email"
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
+            placeholder="Digite sua e-mail"
+            error={errors.email}
+            isRequired={true}
           />
-          {touched.email && (
-            <FormHelperText textColor="#e74c3c">{errors.email}</FormHelperText>
-          )}
-        </FormControl>
+        </Box>
 
-        <FormControl id="password" p={4} isRequired>
-          <FormLabel>Password</FormLabel>
+        <Box p={4}>
           <Input
-            size="lg"
+            label="Senha"
             type="password"
+            touched={touched.password}
+            size="lg"
+            name="password"
             value={values.password}
             onChange={handleChange}
             onBlur={handleBlur}
+            placeholder="Digite sua senha"
+            error={errors.password}
+            isRequired={true}
           />
-          {touched.password && (
-            <FormHelperText textColor="#e74c3c">
-              {errors.password}
-            </FormHelperText>
-          )}
-        </FormControl>
+        </Box>
 
         <FormControl id="username" p={4} isRequired>
           <InputGroup size="lg">
             <InputLeftAddon children="clocker.work/" />
-            <Input
+            <InputBase
               type="username"
               value={values.username}
               onChange={handleChange}
