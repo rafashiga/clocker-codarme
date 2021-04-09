@@ -1,7 +1,7 @@
 import { firebaseServer } from '@/config/firebase/server';
 
 const db = firebaseServer.firestore();
-const agenda = db.collection('agemda');
+const agenda = db.collection('agenda');
 
 export default async (req, res) => {
   const { authorization } = req.headers;

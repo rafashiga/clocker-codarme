@@ -4,7 +4,7 @@ interface HeaderProps {
   children: React.ReactNode;
 }
 
-const Header = ({ children }: HeaderProps) => {
+export const Header = ({ children }: HeaderProps) => {
   return (
     <Box
       p={4}
@@ -16,5 +16,3 @@ const Header = ({ children }: HeaderProps) => {
     </Box>
   );
 };
-
-export default Header;

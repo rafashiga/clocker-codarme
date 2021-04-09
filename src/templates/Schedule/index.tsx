@@ -5,30 +5,33 @@ import { useRouter } from 'next/router';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import dateFormatted from '@/utils/DateFormatted';
-import { Logo, Header } from '@/components';
-import { getToken } from '@/config/firebase/client';
+import { Logo, Header, TimeBlock } from '@/components';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Container, Button, IconButton, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Container,
+  Button,
+  IconButton,
+  Text,
+  SimpleGrid,
+  Spinner,
+} from '@chakra-ui/react';
 
-const getAgenda = async (when: Date) => {
-  const token = await getToken();
-
-  return await axios.get('/api/agenda', {
+const getSchedule = async (when: Date) => {
+  return await axios.get('/api/schedule', {
     params: {
       when,
-    },
-    headers: {
-      Authorization: `Bearer ${token}`,
+      username: window.location.pathname,
     },
   });
 };
 
-const AgendaTemplate = () => {
+const ScheduleTemplate = () => {
   const { auth, logout } = useContext(AuthContext);
   const router = useRouter();
   const [when, setWhen] = useState(() => new Date());
 
-  const [data, { loading, status, error }, fetch] = useFetch(getAgenda, {
+  const [data, { loading, status, error }, fetch] = useFetch(getSchedule, {
     lazy: true,
   });
 
@@ -52,7 +55,7 @@ const AgendaTemplate = () => {
   };
 
   useEffect(() => {
-    !auth.user && router.push('/');
+    !auth.user && router.push('/schedule');
   }, [auth.user]);
 
   useEffect(() => {
@@ -88,8 +91,23 @@ const AgendaTemplate = () => {
           onClick={nextDay}
         />
       </Box>
+
+      <SimpleGrid p={4} columns={2} spacing={4} justifyItems="center">
+        {loading && (
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        )}
+        {data?.map((time) => (
+          <TimeBlock key={time} time={time} />
+        ))}
+      </SimpleGrid>
     </Container>
   );
 };
 
-export default AgendaTemplate;
+export default ScheduleTemplate;
