@@ -36,8 +36,8 @@ const ScheduleTemplate = () => {
   const getSchedule = async (when: Date) => {
     return await axios.get('/api/schedule', {
       params: {
-        when,
-        username: window.location.pathname,
+        date: dateFormatted(when),
+        username: window.location.pathname.replace('/', ''),
       },
     });
   };
@@ -49,9 +49,7 @@ const ScheduleTemplate = () => {
   const setSchedule = async ({ date, ...data }: ISchedule) => {
     return axios.post('/api/schedule', {
       ...data,
-      date: `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(
-        -2
-      )}-${date.getDate()}`,
+      date: dateFormatted(date),
       username: window.location.pathname.replace('/', ''),
       when: time,
     });
@@ -161,8 +159,13 @@ const ScheduleTemplate = () => {
       )}
 
       <SimpleGrid p={4} columns={2} spacing={4} justifyItems="center">
-        {data?.map((time: string) => (
-          <TimeBlock key={time} time={time} click={() => toggleModal(time)} />
+        {data?.map(({ time, isBlocked }) => (
+          <TimeBlock
+            key={time}
+            time={time}
+            click={() => toggleModal(time)}
+            disabled={isBlocked}
+          />
         ))}
 
         <Modal

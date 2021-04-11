@@ -4,12 +4,19 @@ const db = firebaseServer.firestore();
 const profiles = db.collection('profiles');
 const agenda = db.collection('agenda');
 
-const setSchedule = async (req, res) => {
-  const { username, when, name, phone, date } = req.body;
-
+const getUserId = async (username) => {
   const profileDoc = await profiles.where('username', '==', username).get();
 
   const { userId } = profileDoc.docs[0].data();
+
+  return userId;
+};
+
+const setSchedule = async (req, res) => {
+  const { username, when, name, phone, date } = req.body;
+
+  const userId = await getUserId(username);
+
   const docId = `${userId}#${date}#${when}`;
 
   const agendaDoc = await agenda.doc(docId).get();
@@ -29,19 +36,35 @@ const setSchedule = async (req, res) => {
   return res.status(204).json(userAgenda);
 };
 
-const getSchedule = (req, res) => {
+const getSchedule = async (req, res) => {
+  const { username, date } = req.query;
+
   const startAt = new Date(2021, 1, 1, 8, 0);
   const endAt = new Date(2021, 1, 1, 17, 0);
   const totalHours = Math.abs(endAt.getTime() - startAt.getTime()) / 36e5;
 
-  const timeBlocks = [];
+  const timesList = [];
 
   for (let index = 0; index <= totalHours; index++) {
     const time = startAt.getHours() + index;
-    timeBlocks.push(`${time}:00`);
+    timesList.push(`${time}:00`);
   }
 
-  return res.status(200).json(timeBlocks);
+  const userId = await getUserId(username);
+
+  const agendaSnapshot = await agenda
+    .where('userId', '==', userId)
+    .where('date', '==', date)
+    .get();
+
+  const timesBlocked = agendaSnapshot.docs.map((doc) => doc.data());
+
+  const result = timesList.map((time) => ({
+    time,
+    isBlocked: !!timesBlocked.find((doc) => doc.when === time),
+  }));
+
+  return res.status(200).json(result);
 };
 
 const methods = {
