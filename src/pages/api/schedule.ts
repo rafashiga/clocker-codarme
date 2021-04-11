@@ -5,19 +5,22 @@ const profiles = db.collection('profiles');
 const agenda = db.collection('agenda');
 
 const setSchedule = async (req, res) => {
-  const { username, when, name, phone } = req.body;
+  const { username, when, name, phone, date } = req.body;
+
   const profileDoc = await profiles.where('username', '==', username).get();
 
   const { userId } = profileDoc.docs[0].data();
+  const docId = `${userId}#${date}#${when}`;
 
-  const agendaDoc = await agenda.doc(`${userId}#${when}`).get();
+  const agendaDoc = await agenda.doc(docId).get();
 
   if (agendaDoc.exists) {
     return res.status(400).send({ message: 'Horário já registrado' });
   }
 
-  const userAgenda = await agenda.doc(`${userId}#${when}`).set({
+  const userAgenda = await agenda.doc(docId).set({
     userId,
+    date,
     when,
     name,
     phone,

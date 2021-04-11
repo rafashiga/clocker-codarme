@@ -19,6 +19,13 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
+interface ISchedule {
+  date: Date;
+  time: string;
+  name: string;
+  phone: string;
+}
+
 const ScheduleTemplate = () => {
   const router = useRouter();
   const { auth, logout } = useContext(AuthContext);
@@ -39,9 +46,12 @@ const ScheduleTemplate = () => {
     lazy: true,
   });
 
-  const setSchedule = async (data) => {
+  const setSchedule = async ({ date, ...data }: ISchedule) => {
     return axios.post('/api/schedule', {
       ...data,
+      date: `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(
+        -2
+      )}-${date.getDate()}`,
       username: window.location.pathname.replace('/', ''),
       when: time,
     });
@@ -62,7 +72,7 @@ const ScheduleTemplate = () => {
     },
     onSubmit: async (values) => {
       try {
-        await setSchedule(values);
+        await setSchedule({ ...values, time, date: when });
         toggleModal();
       } catch (error) {
         console.error(error);
