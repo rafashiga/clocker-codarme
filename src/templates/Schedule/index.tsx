@@ -32,12 +32,11 @@ const ScheduleTemplate = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [time, setTime] = useState('');
   const [when, setWhen] = useState(() => new Date());
+  const username = router.query.username;
 
   if (router.isFallback) {
     return null;
   }
-
-  const username = router.query.username;
 
   const getSchedule = async (date: Date, currentUser: string) => {
     try {
@@ -59,12 +58,16 @@ const ScheduleTemplate = () => {
   });
 
   const setSchedule = async ({ date, ...data }: ISchedule) => {
-    return axios.post('/api/schedule', {
-      ...data,
-      date: dateFormatted(date),
-      username: router.query.username,
-      when: time,
-    });
+    try {
+      return axios.post('/api/schedule', {
+        ...data,
+        date: dateFormatted(date),
+        username: router.query.username,
+        time,
+      });
+    } catch (error) {
+      console.error(error.response);
+    }
   };
 
   const {
@@ -84,6 +87,7 @@ const ScheduleTemplate = () => {
       try {
         await setSchedule({ ...values, time, date: when });
         toggleModal();
+        refresh();
       } catch (error) {
         console.error(error);
       }
@@ -120,22 +124,19 @@ const ScheduleTemplate = () => {
     setIsOpenModal((prevState) => !prevState);
   };
 
-  // useEffect(() => {
-  //   if (username) {
-  //     !auth.user ? router.push('/') : router.push('/' + username);
-  //   }
-  // }, [auth.user, username]);
+  const refresh = () => {
+    if (username) fetch(when, username);
+  };
 
   useEffect(() => {
-    fetch(when, username);
+    refresh();
   }, [when, username]);
 
   return (
     <Container>
-      <Header>
-        <Logo width="150px" />
-        <Button onClick={logout}>Sair</Button>
-      </Header>
+      <Box display="flex" mt="5" justifyContent="center">
+        <Logo width="250px" />
+      </Box>
       <Box
         p={4}
         mt={10}

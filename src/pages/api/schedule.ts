@@ -17,11 +17,11 @@ const getUserId = async (username) => {
 };
 
 const setSchedule = async (req, res) => {
-  const { username, when, name, phone, date } = req.body;
+  const { username, time, name, phone, date } = req.body;
 
   const userId = await getUserId(username);
 
-  const docId = `${userId}#${date}#${when}`;
+  const docId = `${userId}#${date}#${time}`;
 
   const agendaDoc = await agenda.doc(docId).get();
 
@@ -32,7 +32,7 @@ const setSchedule = async (req, res) => {
   const userAgenda = await agenda.doc(docId).set({
     userId,
     date,
-    when,
+    time,
     name,
     phone,
   });
@@ -69,7 +69,7 @@ const getSchedule = async (req, res) => {
 
   const result = timesList.map((time) => ({
     time,
-    isBlocked: !!timesBlocked.find((doc) => doc.when === time),
+    isBlocked: !!timesBlocked.find((doc) => doc.time === time),
   }));
 
   return res.status(200).json(result);

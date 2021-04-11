@@ -5,30 +5,40 @@ import { useRouter } from 'next/router';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import dateFormatted from '@/utils/DateFormatted';
-import { Logo, Header } from '@/components';
+import { Logo, Header, TimeBlock } from '@/components';
 import { getToken } from '@/config/firebase/client';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Container, Button, IconButton, Text } from '@chakra-ui/react';
-
-const getAgenda = async (when: Date) => {
-  const token = await getToken();
-
-  return await axios.get('/api/agenda', {
-    params: {
-      when,
-    },
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+import {
+  Box,
+  Container,
+  Button,
+  IconButton,
+  Text,
+  Spinner,
+} from '@chakra-ui/react';
 
 const AgendaTemplate = () => {
   const { auth, logout } = useContext(AuthContext);
   const router = useRouter();
   const [when, setWhen] = useState(() => new Date());
 
-  const [data, { loading, status, error }, fetch] = useFetch(getAgenda, {
+  const getAgenda = async (when: Date) => {
+    try {
+      const token = await getToken();
+      return await axios.get('/api/agenda', {
+        params: {
+          date: dateFormatted(when),
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const [data, { loading }, fetch] = useFetch(getAgenda, {
     lazy: true,
   });
 
@@ -88,6 +98,36 @@ const AgendaTemplate = () => {
           onClick={nextDay}
         />
       </Box>
+
+      {loading && (
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </Box>
+      )}
+
+      {data?.map((doc) => (
+        <Box
+          display="flex"
+          key={doc.time}
+          background="gray.100"
+          borderRadius={8}
+          p={4}
+          mt={2}
+          alignItems="center"
+        >
+          <Box flex={1}>{doc.time}</Box>
+          <Box textAlign="right">
+            <Text fontSize="2xl">{doc.name}</Text>
+            <Text fontSize="sm">{doc.phone}</Text>
+          </Box>
+        </Box>
+      ))}
     </Container>
   );
 };
