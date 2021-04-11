@@ -7,7 +7,7 @@ import { AuthContext } from '@/contexts/AuthContext';
 import dateFormatted from '@/utils/DateFormatted';
 import { Logo, Header, DateSelect } from '@/components';
 import { getToken } from '@/config/firebase/client';
-import { Box, Container, Button, Text, Spinner } from '@chakra-ui/react';
+import { Box, Container, Button, Text, Spinner, Alert } from '@chakra-ui/react';
 
 const AgendaTemplate = () => {
   const { auth, logout } = useContext(AuthContext);
@@ -62,23 +62,29 @@ const AgendaTemplate = () => {
         </Box>
       )}
 
-      {data?.map((doc) => (
-        <Box
-          display="flex"
-          key={doc.time}
-          background="gray.100"
-          borderRadius={8}
-          p={4}
-          mt={2}
-          alignItems="center"
-        >
-          <Box flex={1}>{doc.time}</Box>
-          <Box textAlign="right">
-            <Text fontSize="2xl">{doc.name}</Text>
-            <Text fontSize="sm">{doc.phone}</Text>
+      {data?.length ? (
+        data.map((doc) => (
+          <Box
+            display="flex"
+            key={doc.time}
+            background="gray.100"
+            borderRadius={8}
+            p={4}
+            mt={2}
+            alignItems="center"
+          >
+            <Box flex={1}>{doc.time}</Box>
+            <Box textAlign="right">
+              <Text fontSize="2xl">{doc.name}</Text>
+              <Text fontSize="sm">{doc.phone}</Text>
+            </Box>
           </Box>
-        </Box>
-      ))}
+        ))
+      ) : (
+        <Alert mt={4} status="info">
+          0 usuários agendados
+        </Alert>
+      )}
     </Container>
   );
 };

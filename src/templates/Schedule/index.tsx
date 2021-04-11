@@ -44,7 +44,7 @@ const ScheduleTemplate = () => {
     }
   };
 
-  const [data, { loading, status, error }, fetch] = useFetch(getSchedule, {
+  const [data, { loading }, fetch] = useFetch(getSchedule, {
     lazy: true,
   });
 
