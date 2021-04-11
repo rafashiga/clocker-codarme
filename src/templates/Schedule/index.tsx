@@ -33,13 +33,25 @@ const ScheduleTemplate = () => {
   const [time, setTime] = useState('');
   const [when, setWhen] = useState(() => new Date());
 
-  const getSchedule = async (when: Date) => {
-    return await axios.get('/api/schedule', {
-      params: {
-        date: dateFormatted(when),
-        username: window.location.pathname.replace('/', ''),
-      },
-    });
+  if (router.isFallback) {
+    return null;
+  }
+
+  const username = router.query.username;
+
+  const getSchedule = async (date: Date, currentUser: string) => {
+    try {
+      return await axios.get('/api/schedule', {
+        params: {
+          date: dateFormatted(date),
+          username: currentUser,
+        },
+      });
+    } catch (error) {
+      if (error.response?.status === 404) {
+        router.push('/');
+      }
+    }
   };
 
   const [data, { loading, status, error }, fetch] = useFetch(getSchedule, {
@@ -50,7 +62,7 @@ const ScheduleTemplate = () => {
     return axios.post('/api/schedule', {
       ...data,
       date: dateFormatted(date),
-      username: window.location.pathname.replace('/', ''),
+      username: router.query.username,
       when: time,
     });
   };
@@ -108,13 +120,15 @@ const ScheduleTemplate = () => {
     setIsOpenModal((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    !auth.user ? router.push('/') : router.push('/schedule');
-  }, [auth.user]);
+  // useEffect(() => {
+  //   if (username) {
+  //     !auth.user ? router.push('/') : router.push('/' + username);
+  //   }
+  // }, [auth.user, username]);
 
   useEffect(() => {
-    fetch(when);
-  }, [when]);
+    fetch(when, username);
+  }, [when, username]);
 
   return (
     <Container>

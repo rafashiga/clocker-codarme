@@ -7,6 +7,10 @@ const agenda = db.collection('agenda');
 const getUserId = async (username) => {
   const profileDoc = await profiles.where('username', '==', username).get();
 
+  if (!profileDoc.docs.length) {
+    return;
+  }
+
   const { userId } = profileDoc.docs[0].data();
 
   return userId;
@@ -51,6 +55,10 @@ const getSchedule = async (req, res) => {
   }
 
   const userId = await getUserId(username);
+
+  if (!userId) {
+    return res.status(404).send({ message: 'User not found' });
+  }
 
   const agendaSnapshot = await agenda
     .where('userId', '==', userId)
