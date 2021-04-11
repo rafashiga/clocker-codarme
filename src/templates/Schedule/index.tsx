@@ -7,17 +7,8 @@ import { useRouter } from 'next/router';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import dateFormatted from '@/utils/DateFormatted';
-import { Logo, Header, TimeBlock, Modal, Input } from '@/components';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Container,
-  Button,
-  IconButton,
-  Text,
-  SimpleGrid,
-  Spinner,
-} from '@chakra-ui/react';
+import { Logo, TimeBlock, Modal, Input, DateSelect } from '@/components';
+import { Box, Container, SimpleGrid, Spinner } from '@chakra-ui/react';
 
 interface ISchedule {
   date: Date;
@@ -98,25 +89,6 @@ const ScheduleTemplate = () => {
     }),
   });
 
-  const dateOptions = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  };
-
-  const nextDay = () => {
-    let nextDate = new Date();
-    nextDate = new Date(nextDate.setDate(when.getDate() + 1));
-    setWhen(nextDate);
-  };
-
-  const previousDay = () => {
-    let previousDate = new Date();
-    previousDate = new Date(previousDate.setDate(when.getDate() - 1));
-    setWhen(previousDate);
-  };
-
   const toggleModal = (time?: string) => {
     values.name = '';
     values.phone = '';
@@ -137,29 +109,7 @@ const ScheduleTemplate = () => {
       <Box display="flex" mt="5" justifyContent="center">
         <Logo width="250px" />
       </Box>
-      <Box
-        p={4}
-        mt={10}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <IconButton
-          aria-label="anterior"
-          icon={<ChevronLeftIcon />}
-          bg="transparent"
-          onClick={previousDay}
-        />
-        <Text flex={1} textAlign="center">
-          {dateFormatted(when, dateOptions)}
-        </Text>
-        <IconButton
-          aria-label="próximo"
-          icon={<ChevronRightIcon />}
-          bg="transparent"
-          onClick={nextDay}
-        />
-      </Box>
+      <DateSelect setDate={setWhen} date={when} />
 
       {loading && (
         <Box display="flex" alignItems="center" justifyContent="center">
