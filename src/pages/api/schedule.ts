@@ -13,17 +13,17 @@ const setSchedule = async (req, res) => {
   const agendaDoc = await agenda.doc(`${userId}#${when}`).get();
 
   if (agendaDoc.exists) {
-    return res.status(400);
+    return res.status(400).send({ message: 'Horário já registrado' });
   }
 
-  await agenda.doc(`${userId}#${when}`).set({
+  const userAgenda = await agenda.doc(`${userId}#${when}`).set({
     userId,
     when,
     name,
     phone,
   });
 
-  return res.status(204);
+  return res.status(204).json(userAgenda);
 };
 
 const getSchedule = (req, res) => {
@@ -47,4 +47,4 @@ const methods = {
 };
 
 export default async (req, res) =>
-  methods[req.method] ? methods[req.method](req, res) : res.status(405);
+  methods[req.method] ? methods[req.method](req, res) : res.status(405).send();

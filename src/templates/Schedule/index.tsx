@@ -60,7 +60,14 @@ const ScheduleTemplate = () => {
       name: '',
       phone: '',
     },
-    onSubmit: (values) => setSchedule(values),
+    onSubmit: async (values) => {
+      try {
+        await setSchedule(values);
+        toggleModal();
+      } catch (error) {
+        console.error(error);
+      }
+    },
     validationSchema: yup.object().shape({
       name: yup.string().required('Campo obrigatório'),
       phone: yup.string().required('Campo obrigatório'),
@@ -87,6 +94,8 @@ const ScheduleTemplate = () => {
   };
 
   const toggleModal = (time?: string) => {
+    values.name = '';
+    values.phone = '';
     setTime(time);
     setIsOpenModal((prevState) => !prevState);
   };
@@ -129,8 +138,8 @@ const ScheduleTemplate = () => {
         />
       </Box>
 
-      <SimpleGrid p={4} columns={2} spacing={4} justifyItems="center">
-        {loading && (
+      {loading && (
+        <Box display="flex" alignItems="center" justifyContent="center">
           <Spinner
             thickness="4px"
             speed="0.65s"
@@ -138,8 +147,11 @@ const ScheduleTemplate = () => {
             color="blue.500"
             size="xl"
           />
-        )}
-        {data?.map((time) => (
+        </Box>
+      )}
+
+      <SimpleGrid p={4} columns={2} spacing={4} justifyItems="center">
+        {data?.map((time: string) => (
           <TimeBlock key={time} time={time} click={() => toggleModal(time)} />
         ))}
 
@@ -148,6 +160,7 @@ const ScheduleTemplate = () => {
           isOpen={isOpenModal}
           onClose={toggleModal}
           click={handleSubmit}
+          isLoading={isSubmitting}
         >
           <Box p={4}>
             <Input

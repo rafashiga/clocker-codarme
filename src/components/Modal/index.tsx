@@ -12,6 +12,7 @@ import {
 interface ModalProps {
   title?: string;
   isOpen: boolean;
+  isLoading?: boolean;
   onClose: () => void;
   click: () => void;
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export const Modal = ({
   isOpen,
   onClose,
   click,
+  isLoading,
   children,
 }: ModalProps) => {
   return (
@@ -36,7 +38,12 @@ export const Modal = ({
           <Button colorScheme="red" onClick={onClose} mr={4}>
             Cancelar
           </Button>
-          <Button colorScheme="blue" mr={3} onClick={click}>
+          <Button
+            isLoading={isLoading}
+            colorScheme="blue"
+            mr={3}
+            onClick={click}
+          >
             Reservar horário
           </Button>
         </ModalFooter>
