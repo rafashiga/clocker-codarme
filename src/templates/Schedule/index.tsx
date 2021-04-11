@@ -209,6 +209,7 @@ const ScheduleTemplate = () => {
               touched={touched.phone}
               size="lg"
               name="phone"
+              mask={['(99) 9999-9999', '(99) 99999-9999']}
               value={values.phone}
               onChange={handleChange}
               onBlur={handleBlur}
