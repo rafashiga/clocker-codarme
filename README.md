@@ -16,7 +16,9 @@
   <a href="#space_invader-technologies">Technologies</a>
   <br>
   <br>
-  <img src="./public/img/website.png">
+  <img src="./public/img/login.png">
+  <br>
+  <img src="./public/img/schedule.png">
   <br>
   <h3 align="center">
     <a href="https://clocker-codarme.vercel.app/login" target="_blank">
