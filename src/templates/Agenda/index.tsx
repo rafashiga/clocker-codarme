@@ -61,8 +61,7 @@ const AgendaTemplate = () => {
           />
         </Box>
       )}
-
-      {data?.length ? (
+      {!loading && data?.length ? (
         data.map((doc) => (
           <Box
             display="flex"

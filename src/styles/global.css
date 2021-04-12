@@ -1,0 +1,12 @@
+a {
+  color: #2d6cdf !important;
+  transition: all 0.2s;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+main {
+  min-height: 95vh;
+}
