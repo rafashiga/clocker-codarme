@@ -16,7 +16,9 @@
   <a href="#space_invader-technologies">Technologies</a>
   <br>
   <br>
-  <img src="./public/img/website.png">
+  <img src="./public/img/login.png">
+  <br>
+  <img src="./public/img/schedule.png">
   <br>
   <h3 align="center">
     <a href="https://clocker-codarme.vercel.app/login" target="_blank">
@@ -33,3 +35,5 @@
 - [Firebase](https://firebase.google.com/?hl=pt-br)
 - [Formik](https://formik.org/)
 - [Yup](https://github.com/jquense/yup)
+- [remask](https://github.com/brunobertolini/remask)
+- [@refetty/react](https://github.com/brunobertolini/refetty)
