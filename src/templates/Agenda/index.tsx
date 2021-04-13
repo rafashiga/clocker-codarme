@@ -61,29 +61,31 @@ const AgendaTemplate = () => {
           />
         </Box>
       )}
-      {!loading && data?.length ? (
-        data.map((doc) => (
-          <Box
-            display="flex"
-            key={doc.time}
-            background="gray.100"
-            borderRadius={8}
-            p={4}
-            mt={2}
-            alignItems="center"
-          >
-            <Box flex={1}>{doc.time}</Box>
-            <Box textAlign="right">
-              <Text fontSize="2xl">{doc.name}</Text>
-              <Text fontSize="sm">{doc.phone}</Text>
+      {!loading && data?.length
+        ? data.map((doc) => (
+            <Box
+              display="flex"
+              key={doc.time}
+              background="gray.100"
+              borderRadius={8}
+              p={4}
+              mt={2}
+              alignItems="center"
+            >
+              <Box flex={1}>{doc.time}</Box>
+              <Box textAlign="right">
+                <Text fontSize="2xl">{doc.name}</Text>
+                <Text fontSize="sm">{doc.phone}</Text>
+              </Box>
             </Box>
-          </Box>
-        ))
-      ) : (
+          ))
+        : null}
+
+      {!loading && !data?.length ? (
         <Alert mt={4} status="info">
           0 usuários agendados
         </Alert>
-      )}
+      ) : null}
     </Container>
   );
 };
